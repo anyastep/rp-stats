@@ -1,0 +1,201 @@
+;ID;Surname;FirstName.s.;YearOfBirth;YearOfDeath;happiness.sim;papers.sim;height2.sim;FieldsMedal.sim;era;favIceCream.sim
+62;1000062;Bose;R.C.;1901;1987;3,16594042650873;194;average height;0;20thCentury;Chocolate
+260;1000260;Hill;AustinBradford;1897;1991;3,45765095227927;228;average height;0;19thCentury;Vanilla
+249;1000249;Hartley;HermanOtto;1912;1980;8,26956197611002;138;average height;0;20thCentury;Chocolate
+239;1000239;Hajek;Jaroslav;1926;1974;7,24825417339059;26;average height;0;20thCentury;Chocolate
+261;1000261;Hill;JosephAdna;1860;1938;8,52369875186065;193;average height;0;19thCentury;Vanilla
+97;1000097;Chuprov;AlexanderIvanovich;1841;1908;6,31124281993091;99;small;0;19thCentury;Vanilla
+352;1000352;Lilliefors;Hubert;1928;2008;6,87796852755855;174;average height;0;20thCentury;Strawberry
+316;1000316;Kish;Leslie;1910;2000;6,10786051606201;208;average height;0;20thCentury;Chocolate
+292;1000292;Jenkins;Gwilym;1933;1982;2,19118003780109;43;average height;0;20thCentury;Vanilla
+258;1000258;Hickman;JamesC.;1927;2006;6,93481911165137;173;small;0;20thCentury;Chocolate
+202;1000202;Galton;Francis;1822;1911;3,46243541578058;212;tall;0;19thCentury;Strawberry
+519;1000519;Sichel;Herbert;1915;1995;5,19387590808462;179;small;0;20thCentury;Chocolate
+16;1000016;Anderson;Oskar;1887;1960;2,16030520938302;136;small;0;19thCentury;Chocolate
+411;1000411;Moser;Claus;1922;2015;3,37843001178917;237;tall;0;20thCentury;Strawberry
+9;1000009;Aitken;Alexander;1895;1967;2,55050614624315;112;average height;0;19thCentury;Chocolate
+382;1000382;Masuyama;Motosaburo;1912;2005;2,77737973079349;219;small;0;20thCentury;Vanilla
+436;1000436;Parzen;Emanuel;1929;2016;2,77596157355706;194;average height;0;20thCentury;Chocolate
+222;1000222;Gosset (known as Student);WilliamSealy;1876;1937;6,69257916828636;108;average height;0;19thCentury;Chocolate
+10;1000010;Akaike;Hirotsugu;1927;2009;8,62298260608781;186;average height;0;20thCentury;Chocolate
+478;1000478;Robbins;Herbert;1922;2001;2,85624116330968;159;average height;0;20thCentury;Chocolate
+602;1000602;Wold;Herman;1908;1992;5,69080397563384;181;average height;0;20thCentury;Vanilla
+284;1000284;Isserlis;Leon;1881;1966;4,45865210520555;212;average height;0;19thCentury;Chocolate
+85;1000085;Chalmers;George;1742;1825;5,97260201849614;201;average height;1;19thCentury;Vanilla
+586;1000586;Weibull;Waloddi;1887;1979;7,56222523371179;215;average height;0;19thCentury;Chocolate
+595;1000595;Wilk;Martin;1922;2013;8,55567931528436;222;tall;0;20thCentury;Strawberry
+126;1000126;Dantzig;George;1914;2005;4,40777875118622;221;average height;0;20thCentury;Strawberry
+61;1000061;Bortkiewicz;Ladislaus;1868;1931;2,12304800787997;103;average height;0;19thCentury;Chocolate
+329;1000329;Kullback;Solomon;1907;1994;2,91622452080482;193;average height;1;20thCentury;Strawberry
+462;1000462;Polya;George;1887;1985;3,04769976228408;212;average height;0;19thCentury;Chocolate
+277;1000277;Hunter;William;1937;1986;4,64093329121139;55;average height;0;20thCentury;Strawberry
+616;1000616;Yule;G.Udny;1871;1951;6,43489719891982;161;small;0;19thCentury;Strawberry
+421;1000421;Newmarch;William;1820;1882;1,80302941592982;85;average height;0;19thCentury;Strawberry
+188;1000188;Fleiss;JosephL.;1937;2003;6,81164604179887;135;average height;0;20thCentury;Strawberry
+234;1000234;Gumbel;EmilJulius;1891;1966;5,3088696131741;126;average height;0;19thCentury;Chocolate
+591;1000591;Westergaard;HaraldLudvig;1853;1936;3,20974203837514;198;average height;0;19thCentury;Chocolate
+68;1000068;Brad;IonIonescudela;1818;1891;3,99543286318509;147;average height;0;19thCentury;Chocolate
+601;1000601;Wishart;John;1898;1956;2,35678019525568;79;average height;0;19thCentury;Strawberry
+98;1000098;Clark;Colin;1905;1989;2,75434977835109;195;average height;0;20thCentury;Strawberry
+214;1000214;Gauss;CarlFriedrich;1777;1855;4,03569726554691;150;tall;0;19thCentury;Vanilla
+129;1000129;Davies;Griffith;1788;1855;4,87350800597653;121;average height;0;19thCentury;Vanilla
+452;1000452;Playfair;William;1759;1823;6,37373400734389;96;average height;0;19thCentury;Strawberry
+500;1000500;Savage;LeonardJimmie;1917;1971;3,2834575272487;74;average height;0;20thCentury;Chocolate
+372;1000372;Mantel;Nathan;1919;2002;2,51336456124035;181;small;0;20thCentury;Chocolate
+187;1000187;Fleetwood;William;1656;1723;7,46738794881806;101;average height;0;19thCentury;Chocolate
+254;1000254;Helmert;FriedrichRobert;1843;1917;6,38438470064;143;small;0;19thCentury;Chocolate
+167;1000167;Engel;Ernst;1821;1896;7,80106217735752;147;average height;0;19thCentury;Strawberry
+212;1000212;Gini;Corrado;1884;1965;7,21440127889676;195;tall;0;19thCentury;Chocolate
+236;1000236;Guy;William;1810;1885;3,84363569054111;162;average height;0;19thCentury;Chocolate
+293;1000293;Jevons;WilliamStanley;1835;1882;2,93098385591812;57;average height;0;19thCentury;Chocolate
+534;1000534;Spearman;Charles;1863;1945;8,30880516056132;180;small;0;19thCentury;Chocolate
+185;1000185;Fisher;Irving;1867;1947;8,6121408819986;171;tall;0;19thCentury;Strawberry
+112;1000112;Cornfield;Jerome;1912;1979;3,5191970498923;118;average height;0;20thCentury;Vanilla
+507;1000507;Scott;Elizabeth;1917;1988;6,69287010807572;153;average height;0;20thCentury;Chocolate
+295;1000295;Johnson;NormanLloyd;1917;2004;2,58949219020391;178;average height;0;20thCentury;Vanilla
+201;1000201;Gallup;George;1901;1984;3,01202723247317;199;average height;0;20thCentury;Vanilla
+505;1000505;Schuster;Arthur;1851;1934;3,18148601192115;169;average height;0;19thCentury;Chocolate
+90;1000090;Charlier;Carl;1862;1934;2,61290603330062;154;average height;0;19thCentury;Chocolate
+531;1000531;Snedecor;GeorgeW.;1881;1974;2,66344048520647;195;small;0;19thCentury;Vanilla
+487;1000487;Roy;S.N.;1906;1966;7,55722363075694;85;average height;0;20thCentury;Chocolate
+340;1000340;Law;John;1671;1729;6,45241560210911;92;average height;0;19thCentury;Vanilla
+365;1000365;Lundberg;Filip;1876;1965;7,44191553449554;225;average height;0;19thCentury;Vanilla
+7;1000007;Ahsan;Riaz;1951;2008;3,72404833777644;97;average height;0;20thCentury;Chocolate
+517;1000517;Shewhart;WalterA.;1891;1967;6,60091131119033;168;small;0;19thCentury;Vanilla
+32;1000032;Basu;Debabrata;1924;2001;6,97589226816509;172;small;0;20thCentury;Strawberry
+571;1000571;Tukey;John;1915;2000;6,09265687124278;187;tall;1;20thCentury;Chocolate
+30;1000030;Bartlett;M.S.;1910;2002;5,81874490113424;213;average height;0;20thCentury;Chocolate
+527;1000527;Slutsky;Eugen;1880;1948;3,78188706119553;121;average height;0;19thCentury;Chocolate
+12;1000012;Allen;R.G.D.;1906;1983;8,05492716981305;154;small;0;20thCentury;Chocolate
+102;1000102;Coats;RobertH.;1874;1960;5,61917650603205;188;small;0;19thCentury;Vanilla
+282;1000282;Irwin;JosephOscar;1898;1982;4,52596996102127;191;average height;0;19thCentury;Vanilla
+612;1000612;Yates;Frank;1902;1994;7,34090374772339;195;average height;0;20thCentury;Vanilla
+390;1000390;McNemar;Quinn;1900;1986;5,20988776773166;186;small;0;20thCentury;Chocolate
+367;1000367;Mahalanobis;PrasantaChandra;1893;1972;3,05645508751361;157;average height;0;19thCentury;Chocolate
+27;1000027;Barnard;GeorgeAlfred;1915;2002;8,66096811800012;199;average height;0;20thCentury;Chocolate
+422;1000422;Neyman;Jerzy;1894;1981;2,87805129724966;210;average height;0;19thCentury;Vanilla
+105;1000105;Coghlan;TimothyAugustine;1856;1926;5,57380524660515;112;tall;1;19thCentury;Chocolate
+255;1000255;Henderson;CharlesRoy;1911;1989;2,26903011018758;133;average height;0;20thCentury;Chocolate
+619;1000619;Zellner;Arnold;1927;2010;6,90021601695507;174;small;0;20thCentury;Chocolate
+99;1000099;Clarke;RichardW.B.;1910;1975;5,12843932735901;86;average height;0;20thCentury;Chocolate
+587;1000587;Weinstock;Arnold;1924;2002;5,05699023392499;152;average height;0;20thCentury;Chocolate
+614;1000614;Young;Arthur;1741;1820;5,61062850624289;166;average height;1;19thCentury;Strawberry
+118;1000118;Cramer;Harald;1893;1985;4,5642227138511;224;average height;0;19thCentury;Vanilla
+103;1000103;Cochran;WilliamGemmell;1909;1980;2,38914148319249;144;average height;0;20thCentury;Vanilla
+157;1000157;Eckler;A.Ross;1901;1991;3,1714636778069;186;average height;0;20thCentury;Chocolate
+368;1000368;Manwar;KhandakarHossain;1930;1999;6,31178874146414;121;average height;0;20thCentury;Chocolate
+272;1000272;Hogben;Lancelot;1895;1975;8,30615315233835;182;small;0;19thCentury;Chocolate
+599;1000599;Wilson;EdwinBidwell;1879;1964;7,50013065584321;199;average height;0;19thCentury;Vanilla
+50;1000050;Birnbaum;Allan;1923;1976;6,08423108044679;78;average height;0;20thCentury;Vanilla
+209;1000209;Giblin;Lyndhurst;1872;1951;6,85073254220566;183;average height;0;19thCentury;Vanilla
+375;1000375;Marquardt;Donald;1929;1997;5,77596788725632;129;tall;0;20thCentury;Chocolate
+218;1000218;Good;I.J.;1916;2009;8,46511318136866;210;average height;0;20thCentury;Vanilla
+268;1000268;Hollerith;Herman;1860;1929;7,78940768333342;109;average height;0;19thCentury;Vanilla
+303;1000303;Jurin;James;1684;1750;6,59155131466493;74;tall;0;19thCentury;Vanilla
+40;1000040;Berkson;Joseph;1899;1982;7,27735378351447;176;average height;0;19thCentury;Vanilla
+325;1000325;Kruskal;William;1919;2005;8,22446322175533;188;tall;0;20thCentury;Chocolate
+142;1000142;Doll;SirRichard;1912;2005;4,78822280432907;228;average height;0;20thCentury;Chocolate
+5;1000005;Achenwall;Gottfried;1719;1772;1,71413708832392;58;average height;0;19thCentury;Vanilla
+210;1000210;Giffen;Robert;1837;1910;2,86576381085843;153;average height;0;19thCentury;Chocolate
+529;1000529;Smith;Cedric;1917;2002;5,90263588778123;198;average height;0;20thCentury;Strawberry
+6;1000006;Adelstein;AbrahamManie;1916;1992;8,06645736110665;138;average height;0;20thCentury;Chocolate
+25;1000025;Bahadur;RaghuRaj;1924;1997;3,9601582260222;146;average height;0;20thCentury;Chocolate
+240;1000240;Hajnal;John;1924;2008;5,90890565664241;222;average height;0;20thCentury;Chocolate
+248;1000248;Harris;Ted;1919;2006;8,23476195840246;187;average height;0;20thCentury;Vanilla
+330;1000330;Kulldorff;Gunnar;1927;2015;7,49847404534687;184;tall;0;20thCentury;Strawberry
+130;1000130;Davis;Kingsley;1908;1997;5,5149940898712;198;average height;0;20thCentury;Chocolate
+65;1000065;Bowley;ArthurLyon;1869;1957;7,43295975206053;197;tall;0;19thCentury;Chocolate
+224;1000224;Graunt;John;1620;1674;2,19039363398511;48;average height;0;19thCentury;Strawberry
+513;1000513;Shapley;Lloyd;1923;2016;4,72676765692622;231;average height;0;20thCentury;Chocolate
+125;1000125;Dantzig;Davidvan;1900;1959;2,33801298975641;81;average height;0;20thCentury;Vanilla
+43;1000043;Best;AlfredM.;1876;1958;5,45444810067111;177;average height;0;19thCentury;Chocolate
+338;1000338;Laspeyres;Étienne;1834;1913;8,72483913290843;174;tall;0;19thCentury;Strawberry
+424;1000424;Niyogi;Partha;1967;2010;3,10448373385798;27;average height;0;20thCentury;Vanilla
+159;1000159;Eden;SirFrederick;1766;1809;4,71453163494772;12;tall;0;19thCentury;Vanilla
+294;1000294;Jobson;Alexander;1875;1933;7,76884481871656;85;average height;0;19thCentury;Vanilla
+511;1000511;Semyonov-Tyan-Shansky;Pyotr;1827;1914;4,86225999735207;233;average height;0;19thCentury;Vanilla
+53;1000053;Bliss;ChesterIttner;1899;1979;8,10240576086827;156;average height;0;19thCentury;Chocolate
+4;1000004;Abramovitz;Moses;1912;2000;8,44330363933283;186;average height;0;20thCentury;Vanilla
+439;1000439;Pearson;Karl;1857;1936;7,15594041222937;165;average height;0;19thCentury;Chocolate
+117;1000117;Cox;RichardThrelkeld;1898;1991;8,36340170663866;208;average height;0;19thCentury;Chocolate
+275;1000275;Huff;Darrell;1913;2001;3,02457593176546;178;average height;0;20thCentury;Vanilla
+256;1000256;Heyde;Chris;1939;2008;7,85825074261442;128;average height;0;20thCentury;Chocolate
+469;1000469;Rasch;Georg;1901;1980;6,72052168373242;146;small;0;20thCentury;Chocolate
+34;1000034;Bayes;Thomas;1702;1761;4,93536920283122;84;tall;0;19thCentury;Strawberry
+175;1000175;Farr;William;1807;1883;3,05113997924889;141;tall;0;19thCentury;Chocolate
+265;1000265;Hoeffding;Wassily;1914;1991;6,96595579262237;155;tall;0;20thCentury;Vanilla
+307;1000307;Kendall;SirMaurice;1907;1983;7,69680348371912;163;small;0;20thCentury;Chocolate
+186;1000186;Fisher;SirRonaldA.;1890;1962;6,81962049469393;143;average height;0;19thCentury;Vanilla
+288;1000288;Jaynes;EdwinThompson;1922;1998;3,99868791903461;146;average height;0;20thCentury;Chocolate
+89;1000089;Charles;Enid;1894;1972;3,51136784909071;140;small;0;19thCentury;Vanilla
+393;1000393;Meier;Paul;1924;2011;8,16673465775287;175;average height;0;20thCentury;Vanilla
+116;1000116;Cox;GertrudeMary;1900;1978;8,31394194057787;129;tall;0;20thCentury;Vanilla
+217;1000217;Gompertz;Benjamin;1779;1865;5,43161893176636;177;average height;0;19thCentury;Vanilla
+58;1000058;Bonferroni;CarloEmilio;1892;1960;7,31282018412902;111;average height;0;19thCentury;Chocolate
+286;1000286;Jaffrey;Thomas;1861;1953;5,70148565996185;237;small;0;19thCentury;Vanilla
+594;1000594;Wilcoxon;Frank;1892;1965;6,61270829411975;144;average height;0;19thCentury;Chocolate
+229;1000229;Greenwood;Major;1880;1949;7,69537304304199;131;average height;0;19thCentury;Chocolate
+306;1000306;Kendall;DavidGeorge;1918;2007;8,22877134160687;206;small;0;20thCentury;Vanilla
+302;1000302;Juran;JosephM.;1904;2008;3,57099452637874;289;average height;0;20thCentury;Vanilla
+71;1000071;Breslow;Norman;1941;2015;7,2956808581111;153;tall;0;20thCentury;Chocolate
+285;1000285;Jacoby;Oswald;1902;1984;4,07453132825658;181;small;0;20thCentury;Vanilla
+412;1000412;Mosteller;Frederick;1916;2006;3,20231616475816;212;tall;0;20thCentury;Chocolate
+444;1000444;Petty;William;1623;1687;4,79799135294419;103;average height;0;19thCentury;Vanilla
+319;1000319;Kolmogorov;AndreyNikolaevich;1903;1987;4,18478470949213;197;average height;0;20thCentury;Vanilla
+290;1000290;Jeffreys;Harold;1891;1989;3,81777939228023;262;average height;0;19thCentury;Vanilla
+577;1000577;Wald;Abraham;1902;1950;3,10899171202248;26;average height;0;20thCentury;Vanilla
+348;1000348;Lexis;Wilhelm;1837;1914;7,95677202295893;167;average height;0;19thCentury;Vanilla
+250;1000250;Hayter;HenryHeylyn;1821;1895;3,84331138458054;127;tall;1;19thCentury;Vanilla
+525;1000525;Sinclair;SirJohn;1754;1835;2,99335007439616;182;average height;0;19thCentury;Chocolate
+291;1000291;Jellinek;E.Morton;1890;1963;3,98591936166189;154;average height;0;19thCentury;Chocolate
+543;1000543;Steffensen;JohanFrederik;1873;1961;7,14601263381779;209;average height;0;19thCentury;Vanilla
+597;1000597;Wilks;SamuelS.;1906;1964;1,95288882450643;40;average height;0;20thCentury;Strawberry
+555;1000555;Taguchi;Genichi;1924;2012;5,26721908148696;182;small;0;20thCentury;Chocolate
+244;1000244;Halmos;Paul;1916;2006;7,4742956466502;201;average height;0;20thCentury;Vanilla
+169;1000169;Erlang;A.K.;1878;1929;2,1177844601229;54;average height;0;19thCentury;Chocolate
+87;1000087;Champernowne;D.G.;1912;2000;7,08616670476128;177;tall;0;20thCentury;Vanilla
+362;1000362;Lotka;AlfredJ.;1880;1949;6,92027186584596;141;average height;0;19thCentury;Chocolate
+370;1000370;Malthus;ThomasRobert;1766;1834;3,92336657522508;133;average height;0;19thCentury;Vanilla
+3;1000003;Abelson;RobertP.;1928;2005;3,98665158523205;174;average height;0;20thCentury;Chocolate
+247;1000247;Hardin;Garrett;1915;2003;5,16228435531632;250;tall;0;20thCentury;Chocolate
+580;1000580;Wallace;Chris;1933;2004;7,00576433426912;153;average height;0;20thCentury;Vanilla
+472;1000472;Reiersøl;Olav;1908;2001;3,15066057088036;228;average height;0;20thCentury;Chocolate
+199;1000199;Gain;AnilKumar;1919;1978;7,11519978496905;74;small;0;20thCentury;Chocolate
+124;1000124;Daniels;Henry;1912;2000;7,16474558886517;181;average height;0;20thCentury;Vanilla
+2;1000002;Abbott;Edith;1876;1957;2,58076966434673;128;average height;0;19thCentury;Vanilla
+66;1000066;Box;GeorgeE.P.;1919;2010;4,76892620452481;224;average height;0;20thCentury;Chocolate
+134;1000134;Deming;W.Edwards;1900;1993;8,71873620539234;255;average height;0;20thCentury;Vanilla
+388;1000388;McKendrick;AndersonGray;1876;1943;3,43810199169715;104;average height;0;19thCentury;Vanilla
+353;1000353;Lindeberg;JarlWaldemar;1876;1932;1,75062665260318;84;small;0;19thCentury;Vanilla
+177;1000177;Fechner;Gustav;1801;1887;6,03544830212588;172;tall;0;19thCentury;Vanilla
+79;1000079;Cam;LucienLe;1924;2000;5,97573351717993;174;tall;0;20thCentury;Vanilla
+502;1000502;Scheffe;Henry;1907;1977;6,747551409841;151;average height;0;20thCentury;Chocolate
+128;1000128;David;FlorenceNightingale;1909;1993;5,6772546426671;188;small;0;20thCentury;Vanilla
+276;1000276;Hunter;SirWilliamWilson;1840;1900;2,32505089704844;81;average height;0;19thCentury;Vanilla
+539;1000539;Stamp;Josiah;1880;1941;2,3571916075938;93;average height;0;19thCentury;Strawberry
+532;1000532;Snyder;Carl;1869;1946;4,03418924838988;149;tall;0;19thCentury;Vanilla
+438;1000438;Pearson;Egon;1895;1980;3,11269411634556;189;average height;0;19thCentury;Chocolate
+205;1000205;Geisser;Seymour;1929;2004;3,94139195404394;151;tall;0;20thCentury;Strawberry
+274;1000274;Hotelling;Harold;1895;1973;3,98801823027786;153;average height;1;19thCentury;Vanilla
+603;1000603;Wolfowitz;Jacob;1910;1981;8,19068949684648;149;average height;0;20thCentury;Vanilla
+450;1000450;Pitman;E.J.G.;1897;1993;8,60844388587307;213;average height;0;19thCentury;Chocolate
+273;1000273;Hooker;ReginaldHawthorn;1867;1944;8,10005479128695;145;tall;0;19thCentury;Strawberry
+1;1000001;Aalen;OddOlai;1947;1987;4,10332078539512;4;average height;0;20thCentury;Strawberry
+419;1000419;Nelder;John;1924;2010;2,87536542382544;194;average height;0;20thCentury;Chocolate
+503;1000503;Schlaifer;Robert;1915;1994;3,85188021221978;169;average height;0;20thCentury;Chocolate
+182;1000182;Finetti;Brunode;1906;1985;4,06527758255789;179;average height;0;20thCentury;Vanilla
+257;1000257;Hibbert;SirJack;1932;2005;2,7562923877349;150;average height;0;20thCentury;Vanilla
+516;1000516;Sheppard;WilliamFleetwood;1863;1936;8,1392495223192;146;average height;0;19thCentury;Vanilla
+91;1000091;Chebyshev;Pafnuty;1821;1894;7,82987676722242;141;average height;0;19thCentury;Vanilla
+96;1000096;Chuprov;AlexanderAlexandrovich;1874;1926;1,48901982409547;21;small;0;19thCentury;Chocolate
+621;1000621;Zipf;GeorgeKingsley;1902;1950;7,15353072684808;27;average height;0;20thCentury;Strawberry
+127;1000127;Darwin;John;1923;2008;3,13582379443354;190;average height;0;20thCentury;Chocolate
+245;1000245;Hamilton;LordGeorge;1845;1927;6,80041898161348;185;average height;0;19thCentury;Vanilla
+283;1000283;Ishikawa;Kaoru;1915;1989;4,80844027435293;121;average height;0;20thCentury;Chocolate
+423;1000423;Nightingale;Florence;1820;1910;5,43289782761819;212;small;0;19thCentury;Strawberry
+33;1000033;Baxter;Laurence;1954;1996;1,87236338663316;31;average height;0;20thCentury;Chocolate
+133;1000133;DeGroot;MorrisH.;1931;1989;1,51264414294602;71;small;0;20thCentury;Strawberry
+18;1000018;Anscombe;Francis;1918;2001;6,68448151965037;152;average height;0;20thCentury;Vanilla
+163;1000163;Eisenhart;Churchill;1913;1994;3,04540029564777;181;small;0;20thCentury;Strawberry
+160;1000160;Edgeworth;FrancisYsidro;1845;1926;7,1558646550022;175;tall;0;19thCentury;Chocolate
+357;1000357;Linnik;Yuri;1915;1972;7,81055577474486;83;average height;0;20thCentury;Vanilla
