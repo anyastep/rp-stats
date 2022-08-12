@@ -1,0 +1,392 @@
+---
+title: "A very brief introduction to statistics"
+author: "Anna Stepanova"
+date: '2018-09-25'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, warning = FALSE)
+setwd("")
+
+```
+
+> "Torture numbers, and they'll confess to anything."
+> `r tufte::quote_footer('Gregg Easterbrook')`
+
+Statistical analysis aims to contibute to our understanding of the wold by
+
+- organizing observatinal characteristics of the world into data
+- framing the data as variables suited for answering specific questions
+- displaying features of variables visually or by summary statistics
+- modeling relations between variables to describe mechanisms of interest
+
+### The nature of data
+
+Data sets consist of units or cases, which have characteristics or variables.
+
+Each variable of each case has its own particular value.
+
+**Data formats**
+
+- Cross-sectional: multiple observations at one point in time
+- Time series: one observation at multiple points in time
+- Longitudinal: multiple observations at multiple points in time
+
+**Variable types**
+
+- Cardinal: e.g. (exact) age at the time of graduation
+- Nominal: e.g. nationality of the student
+- Ordinal: e.g. grade
+- Binary: e.g. gender of the student
+
+Data can be transformed from cardinal to ordinal to nominal.
+
+Transformation in the other direction is generally not possible.
+
+### Grasping data at a glance
+
+There are multiple ways to summaris ecomplex data into one or a few numbers.
+
+**Measures of location** depict an average or a typical value, e.g. arithmetic mean, median, mode
+
+**Measures of spread** depict the variation observed in the numbers, e.g. standard deviation, variance, range, quartile deviation
+
+**Quantiles** depict the value for which a share of observations lie below the value, e.g. the 5th percentile, e.g. in the p-value
+
+#### Managing data
+
+Load the data set 'genes.csv' and take a look at the type of each variable.
+
+```{r part1}
+
+d <- read.csv("data/genes.csv", header = TRUE, sep = ",", dec = ".")
+str(d)
+
+sapply(d, class)
+
+```
+
+#### Summary statistics and precision
+
+Calculate the arithmetic mean and the standard deviation of length, expression, and half-life.
+
+Report to two decimal places.
+
+```{r part2}
+
+round(mean(d$length), 2)
+round(mean(d$expression), 2)
+round(mean(d$halflife), 2)
+
+round(sd(d$length), 2)
+round(sd(d$expression), 2)
+round(sd(d$halflife), 2)
+
+```
+
+### Getting a feel for the data
+
+An important step in statistical analysis is data visualization.
+
+**Pie diagrams** display the shared of certain groups in a dataset
+
+\+ Very simple to grasp
+
+\+ Few external speficications needed
+
+\- Displays only relative probabilities, not absolute frequencies
+
+\- Displays only one variable at a time, cannot relate variables
+
+**Histograms** display frequencies or relative probabilities for one variable
+
+\+ Works for discrete and continuous variables
+
+\+ Simple to grasp
+
+\+ Displays the whole distribution
+
+\- Displays only one variable at a time, cannot relate variables
+
+\- Non-equidistant binwidth can complicate interpretation
+
+**Box-and-whisker plots** display the median, the inter-quartile range, and outliers for one variable
+
+\+ Simple to grasp
+
+\+ Displays several distributional aspects
+
+\+ Allows the comparison of groups
+
+\- Works only for continuous and ordered variables
+
+\- Focuses on quantile-based measures, not mean and standard deviation
+
+
+**Scatter plots** relate one variable to another variable
+
+\+ Can reveal relations between variables
+
+\+ Allows for complex analysis
+
+\+ Allows the comparison of groups
+
+\- Can be fuzzy and too complex
+
+\- Overlapping may give misleading impressions
+
+### Visualizing data
+
+Plot a histogram to visualize the distribution of the variable optimality.
+
+```{r part3.1}
+
+hist(d$optimality)
+
+```
+
+Plot a scatter plot to visualize the relationship between the variables expression and half-life.
+
+```{r part3.2}
+
+plot(d$optimality, d$halflife)
+
+```
+
+Plot a boxplot to visualize the relationship between the variables optimality and half-life.
+
+```{r part3.3}
+
+boxplot(d$optimality, d$halflife)
+
+```
+
+### Statistical inference
+
+The fundamental dilemma of statistical inference is that one cannot provide positive proof by empirical observation.
+
+The logic of statistical inference is thus built around statistically proving things by negation.
+
+Usually two contrasting hypotheses are formulated and decided upon using the empirical evidence:
+
+- The null hypothesis, which can in principle be negated by induction, denoted $H_0$
+- The alternative hypothesis, which constitutes the complement to the null hypothesis, denoted, $H_1$
+
+#### AVONA
+
+Analysis of variance draws inferences about differences in the means of groups of a population by analyzing the following components:
+
+- The variance within the groups, i.e. the variation of the individual observations fro mthe group-specific mean
+- The variance between the groups, i.e. the variation of the groups' means from the global population mean
+
+ANOVA compares the two following estimated variance components:
+
+- The estimated variance explained by the model, given by a mean squares estimate
+- The estimated variance left unexplained by the model, given by a second mean squares estimate
+
+Under the null hypothesis $H_0:\mu_A=\mu_B$, the sampling distribution of the quotient of these two variance components is the F distribution, i.e.
+$$\frac{MSQ_M}{MSQ_\epsilon}= F \sim F(v_1 = df_M, v2 = df_\epsilon).$$
+
+If the quotient of these variables is large, we assume that any observed differences in the sample means of two groups cannot be ascribed to chance, thus rejecting the null hypothesis as $H_1:\mu_A \neq \mu_B$.
+
+#### Hypothesis tests
+
+The standard approach for statistical inference is the hypothesis test.
+
+The standard measure for assessing the viability of the null hypothesis is the p-value.
+
+The p-values gives the probability to obtain a more extreme outcome than the one observed, assuming the null hypothesis is true.
+
+If a p-value falls below a given threshold, the empirical evidence is thought deviate significantly from the postulated null hypothesis.
+
+Since statistical inference is by its nature uncertain, two types of errors can be made:
+
+- Type I error results when the null hypothesis is falsely rejected.
+- Type II error results when the null hypothesis is falsely accepted.
+
+#### Descriptive and inferential statistics
+
+Compute the arithmetic means for the variable gene expression and a differentiation between different gene types.
+
+```{r part4.1}
+
+library("RcmdrMisc")
+
+with(d, numSummary(expression, groups=type, statistics=c("mean")))
+# mean(subset(d, type=="mRNA")$expression)
+
+```
+
+Using an analysis of variance, assess whether the gene type influences the variation in gene expression values.
+
+```{r part4.2}
+
+mod.lm <- lm(expression~type, data=d)
+anova(mod.lm)
+summary(mod.lm) # for individual comparisons
+
+mod.aov <- aov(expression~type, data=d)
+summary(mod.aov)
+TukeyHSD(mod.aov,c("type")) # p-value is adjusted for multiple comparisons and the p-values ends up higher than in the lm
+
+```
+
+### From ANOVA to regression
+
+Linear models go beyond the comparison of two groups but relate (continuous) variable by an assumed linear relationship.
+
+Simple linear regression normally features the form
+$$Y = \beta_0 + \beta_1X + \epsilon.$$
+where $Y$ denotes the outcome variables of interest and $X$ denotes an explanatory variable that is thought to explain variation in $Y$, while $\epsilon$ entails variation left unexplained by $X$.
+
+The standard approach for statistical inference in regression models is to the test the null hypothesis $H_0: \beta_k = 0$ against the alternative hypothesis $H_1: \beta_k \neq 0$.
+
+Under some reasonable assumptions, it may be assumed that under the null hypothesis the estimates for $\hat\beta_k$ follow a t-distribution.
+
+Analogously to the F-test for ANOVA, one can derive a sampling distribution and consider the p-values for these hypotheses.
+
+### Extending linear models
+
+Linear models allow for the modeling of flexible non-linear relationship by exteding the simple linear form to
+$$Y = \beta_0 + \beta_1X + \beta_2X^2 + \epsilon.$$
+Analogous to the straight line for one cardinal variable, we get a flat plane for two variables.
+
+With the inclusion of interaction effects, we are able to construct more complex surfaces for two cardinal variables.
+
+Linear regression models allow for the inclusion of a multitude of variable types as covariates, including cardinal, nominal, ordinal, binary, and cyclical variables.
+
+### Generalization of linear models
+
+Often we face bionary outcomes, e.g. healthy vs. diseased.
+
+The model's outcome should therefore be interpreted in terms of probability, i.e. provide estimates for
+$$\hat\pi = P(Y=1|X) = E(Y).$$
+A classical linear model is not well suited for this case since predicted values may be outside the [0,1] interval and the distribution of error terms lacks many useful properties, e.g. homoscedasticity.
+
+#### Binary regression model
+
+Binary regression applies a response function, denoted $h$, to the linear regression framework, i.e.
+$$\hat\pi = h(\beta_0 + \beta_1X).$$
+The transformation $h$ can take different forms, commonly the logit transform
+$$h(\beta_0 + \beta_1X) = \frac {exp(\beta_0+\beta_1X)}{1+exp(\beta_0+\beta_1X)}.$$
+Alternatively to the response function, one can also consider the link function, denoted $g$, with $g=h^{-1}.$
+
+This transformation ensures that the predicted outcome stays in the required [0,1] interval.
+
+#### Logit model
+
+The logit model has the appealing property that the model's coefficients can be interpreted directly in the form of odds ratios.
+
+From the link function of the logit model, we get
+$$\frac {\hat\pi}{1-\hat\pi} = exp(\beta_0)exp(\beta_1X).$$
+Thus the odds are affected by the covariate in a multiplicative form.
+
+When comparing to individuals that differ by one unit in $X$, the odds ratio between the two individuals is $exp(\beta_1).$
+For $\beta_1>0,$ the odds are larger for $X+1$ as compared to $X$ (and vice versa for $\beta_1<0$).
+
+The general idea of binary regression is to obtain estimators for a parameter ($\hat\pi$) rather than obtaining hte predictor for an outcome directly ($\hat y$).
+
+#### An introductory linear model
+
+Based on available observations, estimate and interpret a linear regression model of the form
+$$y = \beta_0 + \beta_1x + \epsilon.$$
+```{r part5.1}
+
+statistician <- c("Gauss", "Galton", "Nightingale", "Box", "Kneib")
+y <- c(979000, 324000, 814000, 73500, 13400) # hits on google.com
+x <- c(22300, 22100, 74300, 6270, 927) # hits on Google Scholar
+
+d <- data.frame(google.hits=y, scholar.hits=x)
+
+mod <- lm(google.hits~scholar.hits, data=d)
+summary(mod)
+
+```
+
+Plot the observations and the obtained regression line.
+
+```{r part5.2}
+
+plot(x, y, pch=16, ylim=c(0,1.01e6), xlim=c(0,0.8e5), las=1, xaxt="n", yaxt="n", 
+     xlab="scholar hits (in millions)", ylab="google hits (in millions)",
+     main="A Depiction of Fame and Academic Success on Google", cex.main=0.8)
+abline(mod, col=2, lwd=2)
+text(x, y+0.5e5, labels=statistician, cex=0.5)
+axis(2, seq(0,3e6,by=0.1e6), format(seq(0,3,by=0.1), nsmall=1), las=1) # xaxis
+axis(1, seq(0,5e5,by=0.1e5) ,format(seq(0,0.5,by=0.01), nsmall=2), las=1) # yaxis
+
+```
+
+Based on the model above, we estimate a statistician to have an average 180000 hits on google.com, if he/she has no hits on Google Scholar.
+
+We estimate a statistician to have roughly 10 additional hits on google on average for every additional hit on Google Scholar.
+
+#### A more complex linear model
+
+The data set 'statisticians.csv' contains both real and simulated information on 200 famous statisticians listed on Wikipedia.
+
+Load the data set, estimate and interpret a linear regression model of the form.
+$$happiness.sim = \beta_0 + \beta_1papers.sim + \beta_2height.sim + \epsilon.$$
+```{r part6.1}
+
+d <- read.table("data/statisticians.csv", sep=";", dec=",", header=TRUE)
+
+m <- lm(happiness.sim~papers.sim + height2.sim, data=d)
+summary(m)
+
+```
+
+$\beta_0$: no sensible interpretation (as height=0 not sensible).
+
+$\beta_1$: for every additional paper published the statistician is on average 0.009 points happier, all other things remaining equal.
+
+$\beta_2$: for every additional cm in height the statistician is on average 0.07 points happier, all other things being equal.
+
+Then extend the model to
+$$happiness.sim = \beta_0 + \beta_1papers.sim + \beta_2height.sim + \beta_3FieldsMedal.sim + f_{binary}(era) + f_{nominal}(faviceCream.sim) \epsilon.$$
+```{r part6.2}
+
+d$era <- as.factor(d$era)
+
+m2d <- lm(happiness.sim~papers.sim + height2.sim + FieldsMedal.sim + era + factor(favIceCream.sim), data=d)
+summary(m2d)
+
+```
+
+#### Generalized linear models
+
+Using a logistic regression model relating the probability of winning a Field's Medal to the number of publications, estimate the probability of winning the Field's Medal for a statistician with 200 publications.
+
+```{r part7.1}
+
+mod.logit <- glm(as.factor(FieldsMedal.sim)~papers.sim, family=binomial(link="logit"), data=d)
+summary(mod.logit)
+round(predict(mod.logit, newdata=data.frame(papers.sim=200), type="response"), digits=3)
+
+```
+
+Using a logistic regression model relating gene type to gene length, estimate the probability that an annotated gene with 1000bp length is an mRNA.
+
+```{r part7.2}
+
+library(MASS)
+
+d <- read.csv("data/genes.csv", header = TRUE, sep = ",", dec = ".")
+
+# Convert the factor to a dummy variable: if gene type is equal to mRNA, assign 1; otherwise assign 0
+d$type_binary <- ifelse(d$type == "mRNA", 1, 0)
+d$type_binary <- as.factor(d$type_binary)
+
+output.glm <- glm(type_binary~length, family = binomial(link="logit"), data = d)
+summary(output.glm)
+
+output.glm$coefficients # Extract regression coefficients
+confint(output.glm, level = 0.95) # Compute confidence intervals
+exp(0.4435 + 0.001111*1000)/(1+exp(0.4435 + 0.001111*1000))
+
+```
+
+> "Essentially all models are wrong but some of them are useful"
+> `r tufte::quote_footer('George Box')`
