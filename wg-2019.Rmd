@@ -1,0 +1,345 @@
+---
+title: "Analysing data from WG-Gesucht"
+author: "Anna Stepanova"
+date: "10.10.2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+setwd("D:/Projects/rp-stats")
+
+```
+
+Our data set has information about the rental housing market of Goettingen, which has been collected from WG-Gesucht from January 1, 2018 to April 13, 2018.
+
+There are 639 occurences and the variables include:
+
+- Start date of availability
+- End date of availability
+- Area of the flat (in sm)
+- Area of the room (in sm)
+- Cold rent (in euro)
+- Additional costs (warm rent) (in euro)
+- Further expenses (in euro)
+- Total rent (in euro)
+- Deposit (in euro)
+- Cost of the furniture takeover (in euro)
+- District
+- Number of flatmates
+
+We are going to try to find out what influences the rental prices.
+
+## Planning the data analysis process
+
+Step 1. Define your questions
+
+e.g. Does changing X cause a change in Y? Does the location of the flat have an effect on the total rent?
+
+Step 2. Put the question in the form of a "real-life" null hypothesis and alternate hypothesis
+
+e.g. Null: The location of the flat does not affect the total rent. Alternative: The location of the flat does affect the total rent.
+
+Step 3. Put the question in the form of a statistical null hypothesis and alternate hypothesis
+
+e.g. Null: Flats located in different districts have the same average total rent. Alternative: Flats located in different districts have different average total rent.
+
+Step 4. Determine which variables are relevant to the question
+
+e.g. The two relevant variables in the experiment are **district** and **rent_total**. 
+
+Step 5. Determine what kind of variable each one is
+
+e.g. **rent_total** is a numeric variable, something that you record as a number that could have many possible values. The district is a nominal variable, something with a small number of possible values (22, in this case) that you usually record as a word.
+
+Step 6. Choose the best statistical test to use based on the number and types of variables and the expected fit to parametric assumptions
+
+e.g. Because the goal is to compare the means of one measurement variable among groups classified by one nominal variable, and there are more than two categories, the appropriate statistical test is a one-way ANOVA. Once you know what variables you're analyzing and what type they are, the number of possible statistical tests is usually limited to one or two.
+
+Step 7. Examine the data to see if it meets the assumptions of the statistical test you chose (normality and homoscedasticity tests) and adjust the tests if necessary
+
+e.g. ANOVA assumes that the measurement variable is normal (the distribution fits the bell-shaped normal curve) and homoscedastic (equal variances), and inspecting histograms of the data shows that the data fit these assumptions. If the data doesn't meet the assumptions of ANOVA, the Kruskal-Wallis test or Welch's test might be better.
+
+Step 8. Apply the statistical test you chose and interpret the results
+
+Step 9. Communicate your results effectively, e.g. with a graph or table 
+
+## Data Operations
+
+Load the data:
+```{r}
+
+d <- read.csv("data/wg-gesucht.csv", header = TRUE, sep = ";")
+str(d)
+
+```
+
+Overall check for mean, median, 25th and 7th quartiles, min and max
+
+```{r}
+
+summary(d)
+table(d$district) # frequencies of each category
+table(d$district)/nrow(d)*100 # percentages
+
+```
+
+Measures of central tendency:
+
+```{r}
+
+mean(d$rent_total)
+median(d$rent_total)
+
+```
+
+Measure of spread:
+
+```{r}
+
+var(d$rent_total)
+sd(d$rent_total)
+IQR(d$rent_total) # interquartile range
+min(d$rent_total)
+max(d$rent_total)
+range(d$rent_total)
+
+```
+
+Different plots:
+
+```{r}
+
+hist(d$rent_total, xlab = "Total rent", main = "Histogram of Total Rent")
+boxplot(d$rent_total)
+
+par(las=2) # make label text perpendicular to axis
+barplot(table(d$district), main="Number of Flat by District", horiz=TRUE, cex.names=0.5)
+
+boxplot(rent_total~district, data=d, main="District VS Total Rent")
+
+plot(rent_total~sm_room, data=d)
+
+```
+
+### Correlation coefficients:
+
+```{r}
+
+cor(d$sm_room, d$rent_total)
+rent_total.rk <- rank(d$rent_total)
+sm_room.rk <- rank(d$sm_room)
+cor(rent_total.rk,sm_room.rk,method="spearman")
+
+```
+
+### Probability distribution:
+
+```{r}
+
+h <- hist(d$rent_total, breaks = seq(0, max(d$rent_total), by=5))
+h$probs <- h$counts/sum(h$counts)
+plot(h$mids,h$probs,main="Probability mass function for total rent",ylab="Probability",xlab="Total rent in euro",pch=16,cex.main=1,las=1)
+h$cumprobs <- cumsum(h$probs)
+plot(h$breaks,c(0,h$cumprobs),main="Cumulative mass function for total rent",ylab="Probability",xlab="Total rent in euro",pch=16,cex.main=1,las=1)
+
+```
+
+### Sampling distribution:
+
+```{r}
+
+set.seed(0)
+n  <- nrow(d)
+s1 <- sample(1:n,10,replace=FALSE)
+d1 <- d[s1,]
+m1 <- mean(d1$rent_total)
+s2 <- sample(1:n,10,replace=FALSE)
+d2 <- d[s2,]
+m2 <- mean(d2$rent_total)
+s3 <- sample(1:n,10,replace=FALSE)
+d3 <- d[s3,]
+m3 <- mean(d3$rent_total)
+cbind(m1,m2,m3)
+rbind(s1,s2,s3)
+
+# for 1000 samples of size 10
+par(mfrow=c(2,1))
+B <- 1000
+means.B <- rep(NA,B)
+for(b in 1:B){
+  s.b <- sample(1:n,10,replace=FALSE)
+  d.b <- d[s.b,]
+  means.B[b] <- mean(d.b$rent_total)
+}
+means.B
+hist(means.B,main="sampling distribution for n=10",breaks=seq(0,max(d$rent_total),10),xlim=c(0,600),freq=TRUE,las=1)
+
+# for 1000 samples of size 500
+B <- 1000
+means.B <- rep(NA,B)
+for(b in 1:B){
+  s.b <- sample(1:n,500,replace=FALSE)
+  d.b <- d[s.b,]
+  means.B[b] <- mean(d.b$rent_total)
+}
+means.B
+hist(means.B,main="sampling distribution for n=500",breaks=seq(0,max(d$rent_total),10),xlim=c(0,600),freq=TRUE,las=1)
+
+```
+
+### Testing the normality assumption:
+
+```{r}
+
+x.seq <- seq(0,600,by=5)
+
+hist(d$rent_total,freq=FALSE)
+lines(x.seq,dnorm(x.seq,mean(d$rent_total),sd(d$rent_total))) # compare the observed empricial distribution with the theoretical probability density function for a normal distribution (freq=FALSE is for getting densities rather than frequencies for the empirical distribution)
+shapiro.test(d$rent_total)
+ks.test(d$rent_total,"pnorm")
+
+```
+
+Estimate a linear model which compares the two groups and consider whether the residuals from this model are normally distributed:
+
+```{r}
+
+d2 <- d[which(d$district=="Weende" | d$district=="Innenstadt"),] # consider only 2 groups
+
+m <- lm(rent_total~district,data=d2)
+res <- m$residuals
+hist(res,freq=FALSE)
+lines(x.seq,dnorm(x.seq,mean(res),sd(res)))
+shapiro.test(res)
+ks.test(res,"pnorm")
+
+```
+
+Repeat for all groups:
+
+```{r}
+
+m2 <- lm(rent_total~district,data=d)
+res <- m$residuals
+hist(res,freq=FALSE)
+lines(x.seq,dnorm(x.seq,mean(res),sd(res)))
+shapiro.test(res)
+ks.test(res,"pnorm")
+
+```
+
+Optional: Plot a separate histogram or the observed rent values for all groups and compare it to a normal distribution with the mean and standard deviation estimates taken from the subsample considered:
+
+```{r}
+
+groups <- levels(d$district)
+par(mfrow=c(5,2))
+par(mai=c(0.1,0.3,0.35,0.1))
+for(g in 1:length(groups)){
+  d.sub <- subset(d,district==groups[g])
+  if(any(!is.na(d.sub$rent_total))) hist(d.sub$rent_total,main=paste("Group =",groups[g]),las=1,xlim=c(0,550),breaks=seq(0,550,by=10))+
+  lines(x.seq,dnorm(x.seq,mean(d.sub$rent_total),sd(d.sub$rent_total)))
+}
+
+```
+
+### Linear Models
+
+Estimate with lm(), which minimizes the sum of squared residuals, and use predict() to predict the y:
+
+```{r}
+
+m <- lm(d$rent_total ~ d$sm_room)
+coef(m)
+plot(d$sm_room, d$rent_total)
+abline(m, lwd=2, col=rgb(0.1, 0.6, 0.3, alpha=0.9))
+predict(m,newdata=data.frame(x=d$sm_room))
+sum(m$residuals^2)
+
+```
+
+Add the quadratic effect and predict the obtained values y:
+
+```{r}
+
+m <- lm(d$rent_total ~ d$sm_room + I(d$sm_room^2))
+coef(m)
+yhat <- predict(m,newdata=data.frame(x=d$sm_room))
+x.seq <- seq(0,500,length.out=639)
+y.hat.seq <- predict(m,newdata=data.frame(x=x.seq))
+plot(d$sm_room, d$rent_total)
+lines(x.seq,y.hat.seq,col=rgb(0.1, 0.6, 0.3, alpha=0.9),lwd=3)
+sum(m$residuals^2)
+
+```
+
+### ANOVA:
+
+```{r}
+
+d2 <- d[which(d$district=="Weende" | d$district=="Innenstadt"),]
+# d2 <- subset(d, district=="Weende" | district=="Innenstadt") # consider only 2 groups
+m <- lm(rent_total~district,data=d2)
+anova(m)
+
+summary(aov(rent_total~district,data=d2)) # alternative to lm formulation
+
+```
+
+```{r}
+
+res.aov <- aov(rent_pure ~ district, data = d)
+summary(res.aov)
+
+```
+
+If the p-value is less than the significance level 0.05, we can conclude that there are significant differences between the groups highlighted with "\*" in the model summary.
+
+In one-way ANOVA test, a significant p-value indicates that some of the group means are different, but we don't know which pairs of groups are different.
+
+It's possible to perform multiple pairwise-comparison, to determine if the mean difference between specific pairs of group are statistically significant.
+
+As the ANOVA test is significant, we can compute Tukey HSD (Tukey Honest Significant Differences, R function: TukeyHSD()) for performing multiple pairwise-comparison between the means of groups.
+
+The function TukeyHD() takes the fitted ANOVA as an argument.
+
+```{r}
+
+TukeyHSD(res.aov)
+
+# diff: difference between means of the two groups
+# lwr, upr: the lower and the upper end point of the confidence interval at 95% (default)
+# p adj: p-value after adjustment for the multiple comparisons.
+
+```
+
+The residuals versus fits plot can be used to check the homogeneity of variances.
+
+In the plot below, there is no evident relationships between residuals and fitted values (the mean of each groups), which is good. So, we can assume the homogeneity of variances.
+
+```{r}
+
+plot(res.aov, 1)
+
+```
+
+Some points are detected as outliers, which can severely affect normality and homogeneity of variance.
+
+It can be useful to remove outliers to meet the test assumptions.
+
+It's also possible to use Bartlett's test or Levene's test to check the homogeneity of variances.
+
+The latter is less sensitive to departures from normal distribution.
+
+```{r}
+
+library(car)
+leveneTest(rent_pure ~ district, data = d)
+
+```
+
+If we see from the output that the p-value is not less than the significance level of 0.05, it means that there is no evidence to suggest that the variance across groups is statistically significantly different.
+
+Therefore, we can assume the homogeneity of variances in the different treatment groups.
