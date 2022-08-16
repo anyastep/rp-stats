@@ -1,0 +1,534 @@
+---
+title: "Modeling the effects of climate change"
+date: '2019-05-06'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, warning=FALSE)
+setwd("D:/rp-stats")
+```
+
+### Background
+
+Soils are an extremely important carbon (C) reservoir and are a critical regulator of the global carbon budget.  
+
+It is estimated that soils store more than three quarters of the earth’s terrestrial carbon, around 1500-2400 Pg of C worldwide (Bonan, 2016), and contain between two and five times more C than in the vegetation pool (IPCC 2013).
+
+Given the dynamic nature of the soil carbon pool, even small changes in the processes governing soil C cycling can have the potential to release large amounts of carbon dioxide or methane.
+
+Tropical soils are of particular concern, not only because they are estimated to store a third of all global SOC in the upper 3 m of the soil layer, but also due to their high sensitivity to climate change (van Straaten et al., 2015), as factors like temperature and moisture strongly affect rates of heterotrophic respiration (Davidsson & Janssens, 2006).
+
+While experimental observations are limited in time and scope, their incorporation into models can provide an integrated understanding of the interplay between soil carbon and climate change as well as prediction of its dynamics.
+
+### Objectives
+
+Here we develop a two-pool soil organic carbon (SOC) model to evaluate the effects of climate change-driven changes in temperature and precipitation on soil carbon storage in an old-growth submontane tropical forest system in Indonesia.
+
+In particular, we focus on predictions of soil organic matter (SOM) turnover under the least and most extreme representative concentration pathway (RCP) scenarios for the next century, namely RCP 2.6 and 8.5 scenarios.
+
+RCPs are a part of a set of four pathways that lead to an increase in radiative forcing levels in a range of 2.6-8.5 W/m2 by the year 2100 (Hayhoe et al., 2017).
+
+They predict the possible trajectories of climate change forcing agents and are used as a basis for climate modeling experiments (Kravitz et al., 2015).
+
+The data on monthly organic matter inputs was obtained from the Lore Lindu National Park, Central Suwalesi, Indonesia, as described by van Straaten et al. (2011).
+
+### Parameter estimation
+
+The model focuses on plant litter rates from observed plant productivity as an input variable to estimate SOC turnover, which rate depends on initial SOC content, SOM decomposition rates, temperature and soil moisture content.
+
+We applied a two-pool soil C model, in which the SOM input is divided into two pools with variable decomposition rates, where well-decomposed SOM like humus is defined as slow pool and fresh or partially decomposed plant
+residues as fast pool.
+
+To understand the decomposition rates of soil pools, we used the field data to model the loss of SOC due to soil respiration related to the time of incubation.
+
+```{r decomposition}
+d <- read.csv(file="data/incubation-time.csv", header=TRUE, sep=",")
+d$soc <- d$soc.g.per.kg
+
+plot(d$soc~d$incubation.hours)
+mydata <- data.frame(incubation.hours=seq(0,9000,10)) # a vector of data for plotting
+
+# Linear model
+lnfit <- lm(d$soc~d$incubation.hours)
+abline(lnfit, col="red")
+
+# Exponential model
+fit <- nls(soc~F*exp(k1*incubation.hours)+S*exp(k2*incubation.hours), data=d, start=list(F=3, S=15, k1=-0.003, k2=-0.00001))
+lines(mydata$incubation.hours, predict(fit, newdata=mydata), col="orange", lwd=2)
+
+# Compare model statistics
+summary(lnfit)
+summary(fit)
+
+## Save coefficients (parameters)
+F.fit <- summary(fit)$coefficients[1]
+S.fit <- summary(fit)$coefficients[2]
+k1.fit <- summary(fit)$coefficients[3]
+k2.fit <- summary(fit)$coefficients[4]
+```
+
+The SOC dynamics are expressed by an exponential equation as
+$$SOC = 1.47 \times e^{k_f \times h} + 12.45 \times e^{k_s \times h}, \;\;\; (1)$$
+where SOC is mean soil organic carbon content $(g \; kg^{-1} \; soil)$ as a sum of fast and slow decomposition pools, $k_f$ is the fast pool decomposition rate $(g \; kg^{-1} \; h^{-1})$, $k_s$ is the slow pool decomposition rate $(g \; kg^{-1} \; h^{-1})$, and $h$ is incubation time in hours.
+
+Next, we look at how soil respiration relates to soil temperature.
+
+```{r modifier}
+d <- read.csv(file="data/incubation-temp.csv", header=TRUE, sep=",")
+d$co2 <- d$co2.mg.gsoil.1.h.1
+sample <- d[d$sample==3,] # select one sample
+
+fit1 <- lm(co2~soil.temp, data=sample) # Fit a linear model
+fit.nls1 <- nls(co2 ~ a * exp(k * soil.temp), data=sample, start=list(a=1, k=0.1)) # Fit a simple exponential
+
+plot(sample$co2~sample$soil.temp)
+new <- data.frame(soil.temp=seq(0,30,1))
+lines(new$soil.temp, predict(fit1, newdata=new), col="blue", lwd=1)
+lines(new$soil.temp, predict(fit.nls1, newdata=new), col="green", lwd=1)
+
+# Compare model statistics
+summary(fit1)
+summary(fit.nls1)
+
+# Fit the best model to all soil samples and obtain the average parameter values
+k=NA
+a=NA
+
+for (i in unique(d$sample)) {
+  fit.nls<-nls(co2~a*exp(k*soil.temp), data=d[d$sample==i,], start=list(a=1, k=0.1))
+  k[i] <- summary(fit.nls)$coefficients[2]
+  a[i] <- summary(fit.nls)$coefficients[1]
+}
+
+mean(k) # 0.09801579
+sd(k) # 0.01444984
+
+# Convert to Q10 value
+Q10 <- exp(10*k)
+mean(Q10)
+sd(Q10)
+hist(Q10,10)
+boxplot(Q10)
+```
+
+The temperature modifier $Tmod$ is a function of the $Q_{10}$ value and is expressed as
+$$Tmod=Q_{10}^{(t-t_{ref})\div 10}, \;\;\; (2)$$
+where $t$ is the soil temperature (°C) and $t_{ref}$ is the reference soil temperature.
+
+The $Q_{10}$ value is tied to an increase in the surrounding temperature with an increase in 10 °C, i.e. when the reaction rate is doubled, the $Q_{10}$ value for the reaction is 2.
+
+$Q_{10}$ is determined from field observations of the exponential relationship between soil temperature and soil respiratio and derived from the reaction rate $k$, calculated at the reference soil temperature $t_{ref}$ of 35 °C.
+
+The next relationship to be determined is soil respiration related to the moisture content.
+
+```{r moisture}
+d <- read.csv(file="data/incubation-moisture.csv", header=TRUE, sep=",")
+d <- d[order(d$mvol),] # sort the data by volumetric moisture content
+plot(d$co2.rel~d$mvol) # plot the relationship
+
+# Fit only the linear part of the data (subset argument)
+fit1<-lm(d$co2.rel~d$mvol, subset=d$mvol <= 0.22)
+
+# Plot the model predictions and add a line with the mean value for the remaining data
+lines(d$mvol[d$mvol <= 0.22], predict(fit1), col="blue", lwd=2)
+lines(d$mvol[d$mvol > 0.22], rep(mean(d$co2.rel[d$mvol > 0.22]), length(d$mvol[d$mvol > 0.22])), col = "blue", lwd = 2)
+
+# Fit a polynomial function and plot the predictions
+fit2 <- lm(d$co2.rel~poly(d$mvol, 2, raw=TRUE)) # second degree polynomial
+lines(d$mvol, predict(fit2), col="red", lwd=2)
+
+summary(fit1)
+summary(fit2)
+```
+
+The relationship between the soil moisture content and soil respiration is
+expressed by a quadratic function as
+$$Mmod=0.059+5.27 \times vmc-7.82 \times vmc^2, \;\;\; (3)$$
+where $Mmod$ is a moisture modifying coefficient and $vmc$ is a volumetric moisture content ($cm^3 \; water \; cm^{3 \; -1} \; soil$).
+
+### Model preparation
+
+The model uses monthly organic matter inputs (mg C m-2 h-1), which is separated into leaf, twig, and root litter (Hertel et al, 2009).
+
+The predicted climate data with the estimates of volumetric water content (%) and temperature (°K) projected for RCP 2.6 and 8.5 scenarios were obtained from the Coupled Model Intercomparison Project Phase 5 (CMIP5) (Taylor et al., 2012) and Community Earth System Model (CESM) (Kay et al., 2015).
+
+```{r input}
+input_litter <- read.csv(file="data/sulawesi-input.csv", header=TRUE, sep=";")
+input_rcp26 <- read.csv(file="data/sulawesi-rcp26.csv", header=TRUE, sep=",")
+input_rcp85 <- read.csv(file="data/sulawesi-rcp85.csv", header=TRUE, sep=",")
+input_rcp26$VWC <- input_rcp26$moisture_upper_soil / 100 # convert percentage to decimal
+input_rcp85$VWC <- input_rcp85$moisture_upper_soil / 100
+rcp26 <- input_rcp26[1:36,]
+rcp85 <- input_rcp85[1:36,]
+```
+
+To study the dynamics of SOC turnover, we apply a two-pool soil C model, in which the SOM input is divided into two pools with variable decomposition rates, producing potentially different SOC contents upon the output.
+
+We use the parameters determined above:
+- The decomposition rate for the fast pool is adjusted to the monthly value of -0.91 $g \; kg^{-1} \; mo^{-1}$
+- The decomposition rate for the slow pool is adjusted to the monthly value of -0.012 $g \; kg^{-1} \; mo^{-1}$
+- The $Q10$ value is set to 2.69
+- The reference temperature is converted to Kelvin
+
+The ratio of leaf-root-twig SOM input for the fast pool has been partitioned to 0.75:0.75:0.25 and the corresponding fraction of 0.25:0.25:0.75 was allocated for the slow pool.
+
+```{r parameters}
+# Define parameters
+kf <- -0.91 # fast pool monthly decay rate
+ks <- -0.012 # slow pool monthly decay rate
+Q10 <- 2.69
+Tref <- 308.15 # 35°C + 273.15 = 308.15K
+leaf.fast.frac <- 0.75
+root.fast.frac <- 0.75
+twig.fast.frac <- 0.25
+leaf.slow.frac <- 1-0.75
+root.slow.frac <- 1-0.75
+twig.slow.frac <- 1-0.25
+```
+
+All components of the SOM input were added together in each pool to represent the total litter input and the values were adjusted to $g \; C \; m^{-2} \; mo^{-1}$.
+
+```{r litter}
+# Rename to facilitate work
+leaf <- input_litter$Leaf_litter # (mg C m-2 h-1) 
+root <- input_litter$Root_litter # (mg C m-2 h-1)
+twig <- input_litter$Twig_litter # (mg C m-2 h-1)
+
+litter.fast <- (leaf*leaf.fast.frac + root * root.fast.frac + twig*twig.fast.frac)
+litter.slow <- (leaf*leaf.slow.frac + root * root.slow.frac + twig*twig.slow.frac) 
+litter.slow <- litter.slow * 0.730 # (g C m-2 M-1) converted from hours to monthly and from mg to g
+litter.fast <- litter.fast * 0.730 # (g C m-2 M-1) converted from hours to monthly and from mg to g
+```
+
+The SOC content of each pool in each RCP scenario was calculated as
+$$C=C_{start} \times e^{k \times Tmod \times Mmod}, \;\;\; (4)$$
+where $C_{start}$ is initial SOC value in the pool, $k$ is the decomposition rate for respective pools from equation 1, $Tmod$ is the temperature modifier from equation 2, and $Mmod$ is the moisture modifier from equation 3.
+
+It should be noted that this model excludes SOm input sources other than plant litter, which may neglect the contribution of soil living biomass to the total carbon stock and may not reflect the biological sensitivity of soil respiration to temperature or soil moisture content.
+
+In addition, this model assumes a constant temperature sensitivity thoughout the modeled scenario, which may decrease the accuracy of long-term predictions and complicate the extrapolation of SOC trends to systems in other ecological and climatic zones.
+
+The model also assumes that plant litter input is constant, that no exchange of SOC happens between fast and slow pools, that the pools do not influece each other's processes, and that both temperature and moisture modifiers affect the two pools in the same way, which might not reveal mechanisms that can influence SOC dynamics, e.g. the role of soluble C or labile SOM.
+
+Finally, the 3-year windows of data we use as input may not be representative or account for climatic variability, e.g. El Nino-Southern Oscillation (ENSO).
+
+### Determining starting values
+
+Using the first 2 years of data from both climate scenarios, we run the model at a monthly time-step until the modeled SOC reaches equilibrium in order to determine the predicted starting SOC content under each RCP scenario.
+
+```{r rcp26_1}
+# Number of months to simulate
+max.time <- 2000
+
+# Recycle the input data to the max time of run (max.time)
+temperature26 <- rep(rcp26$temp_surf, length.out = max.time)
+moisture26    <- rep(rcp26$VWC, length.out = max.time)
+litter.fast <- rep(litter.fast, length.out = max.time)
+litter.slow <- rep(litter.slow, length.out = max.time)
+
+# Set starting pool size
+FC26 <- 0
+SC26 <- 0
+SOC26 <- FC26+SC26 # SOC as the sum of all pools
+
+for(i in 1:max.time) {
+  FC26[i] <- FC26[i] + litter.fast[i]
+  SC26[i] <- SC26[i] + litter.slow[i]
+  
+  t.mod  <- Q10^((temperature26[i]-Tref)/10)
+  m.mod  <- 0.059 + 5.27 * moisture26[i] - 7.82 * moisture26[i]^2
+  kf.mod <- kf * t.mod * m.mod
+  ks.mod <- ks * t.mod * m.mod
+  
+  FC26[i+1] <- FC26[i]*exp(kf.mod)
+  SC26[i+1] <- SC26[i]*exp(ks.mod)
+  SOC26[i]  <- FC26[i] + SC26[i]
+}
+
+plot(SOC26, type="n", ylim = c(0, max(SOC26)))
+lines(SC26, col="red")
+lines(FC26, col="green")
+```
+
+```{r rcp85_1}
+# Number of months to simulate
+max.time <- 2000
+
+# Recycle the input data to the max time of run (max.time)
+temperature85 <- rep(rcp85$temp_surf, length.out = max.time)
+moisture85    <- rep(rcp85$VWC, length.out = max.time)
+litter.fast <- rep(litter.fast, length.out = max.time)
+litter.slow <- rep(litter.slow, length.out = max.time)
+
+# Set starting pool size
+FC85 <- 0
+SC85 <- 0
+SOC85 <- FC85 + SC85 # SOC as the sum of all pools
+
+for(i in 1:max.time) {
+  FC85[i] <- FC85[i] + litter.fast[i]
+  SC85[i] <- SC85[i] + litter.slow[i]
+  
+  t.mod  <- Q10^((temperature85[i]-Tref)/10)
+  m.mod  <- 0.059 + 5.27 * moisture85[i] - 7.82 * moisture85[i]^2
+  kf.mod <- kf * t.mod * m.mod
+  ks.mod <- ks * t.mod * m.mod
+  
+  FC85[i+1] <- FC85[i]*exp(kf.mod)
+  SC85[i+1] <- SC85[i]*exp(ks.mod)
+  SOC85[i]  <- FC85[i] + SC85[i]
+}
+
+plot(SOC85, type="n", ylim = c(0, max(SOC85)))
+lines(SC85, col="red")
+lines(FC85, col="green")
+```
+
+### Run the model
+
+The obtained equilibrium values are used as initial SOC values in each pool to run the model for each RCP scenario for 2000 months.
+
+The final SOC content was calculated for the year 2100 and the absolute and relative changes were calculated over the years 2007-2100.
+
+```{r rcp26_2}
+# Number of months to simulate
+max.time <- (2100-2007)*12
+
+# Recycle the input data to the max time of run (max.time)
+temperature_rcp26 <- rep(rcp26$temp_surf, length.out = max.time)
+moisture_rcp26    <- rep(rcp26$VWC, length.out = max.time)
+litter.fast <- rep(litter.fast, length.out = max.time)
+litter.slow <- rep(litter.slow, length.out = max.time)
+
+# Set starting pool size
+FC_rcp26 <- mean(FC26[1500:2000])
+SC_rcp26 <- mean(SC26[1500:2000])
+SOC_rcp26 <- FC_rcp26 + SC_rcp26 # SOC as the sum of all pools
+
+for(i in 1:max.time) {
+  FC_rcp26[i] <- FC_rcp26[i] + litter.fast[i]
+  SC_rcp26[i] <- SC_rcp26[i] + litter.slow[i]
+  
+  t.mod  <- Q10^((temperature_rcp26[i]-Tref)/10)
+  m.mod  <- 0.059 + 5.27 * moisture_rcp26[i] - 7.82 * moisture_rcp26[i]^2
+  kf.mod <- kf * t.mod * m.mod
+  ks.mod <- ks * t.mod * m.mod
+  
+  FC_rcp26[i+1] <- FC_rcp26[i]*exp(kf.mod)
+  SC_rcp26[i+1] <- SC_rcp26[i]*exp(ks.mod)
+  SOC_rcp26[i]  <- FC_rcp26[i] + SC_rcp26[i]
+}
+
+plot(SOC_rcp26, type="n", ylim = c(0, max(SOC_rcp26)))
+lines(SC_rcp26, col="red")
+lines(FC_rcp26, col="green")
+```
+
+```{r rcp85_2}
+# Number of months to simulate
+max.time <- (2100-2007)*12
+
+# Recycle the input data to the max time of run (max.time)
+temperature_rcp85 <- rep(rcp85$temp_surf, length.out = max.time)
+moisture_rcp85    <- rep(rcp85$VWC, length.out = max.time)
+litter.fast <- rep(litter.fast, length.out = max.time)
+litter.slow <- rep(litter.slow, length.out = max.time)
+
+# Set starting pool size
+FC_rcp85 <- mean(FC85[1500:2000])
+SC_rcp85 <- mean(SC85[1500:2000])
+SOC_rcp85 <- FC_rcp85 + SC_rcp85 # SOC as the sum of all pools
+
+for(i in 1:max.time) {
+  FC_rcp85[i] <- FC_rcp85[i] + litter.fast[i]
+  SC_rcp85[i] <- SC_rcp85[i] + litter.slow[i]
+  
+  t.mod  <- Q10^((temperature_rcp85[i]-Tref)/10)
+  m.mod  <- 0.059 + 5.27 * moisture_rcp85[i] - 7.82 * moisture_rcp85[i]^2
+  kf.mod <- kf * t.mod * m.mod
+  ks.mod <- ks * t.mod * m.mod
+  
+  FC_rcp85[i+1] <- FC_rcp85[i]*exp(kf.mod)
+  SC_rcp85[i+1] <- SC_rcp85[i]*exp(ks.mod)
+  SOC_rcp85[i]  <- FC_rcp85[i] + SC_rcp85[i]
+}
+
+plot(SOC_rcp85, type="n", ylim = c(0, max(SOC_rcp85)))
+lines(SC_rcp85, col="red")
+lines(FC_rcp85, col="green")
+```
+
+### Comparing two scenarios
+
+```{r comparison}
+message("RCP 2.6, fast pool, final C content = ", FC_rcp26[1117])
+message("RCP 2.6, slow pool, final C content = ", SC_rcp26[1117])
+total_rcp26 <- FC_rcp26[1117] + SC_rcp26[1117]
+message("RCP 2.6, total final C content = ", total_rcp26)
+
+message("RCP 8.5, fast pool, final C content = ", FC_rcp85[1117])
+message("RCP 8.5, slow pool, final C content = ", SC_rcp85[1117])
+total_rcp85 <- FC_rcp85[1117] + SC_rcp85[1117]
+message("RCP 8.5, total final C content = ", total_rcp85)
+
+a <- mean(FC26[1500:2000])
+b <- mean(SC26[1500:2000])
+init_rcp26 <- a + b
+c <- mean(FC85[1500:2000])
+d <- mean(SC85[1500:2000])
+init_rcp85 <- c + d
+
+message("RCP 2.6, fast pool, absolute change = ", FC_rcp26[1117] - a)
+message("RCP 2.6, fast pool, relative change = ", (FC_rcp26[1117] - a) / a * 100)
+message("RCP 2.6, slow pool, absolute change = ", SC_rcp26[1117] - b)
+message("RCP 2.6, slow pool, relative change = ", (SC_rcp26[1117] - b) / b * 100)
+message("RCP 2.6, total absolute change = ", total_rcp26 - init_rcp26)
+message("RCP 2.6, total relative change = ", (total_rcp26 - init_rcp26) / init_rcp26 * 100)
+
+message("RCP 8.5, fast pool, absolute change = ", FC_rcp85[1117] - a)
+message("RCP 8.5, fast pool, relative change = ", (FC_rcp85[1117] - a) / a * 100)
+message("RCP 8.5, slow pool, absolute change = ", SC_rcp85[1117] - b)
+message("RCP 8.5, slow pool, relative change = ", (SC_rcp85[1117] - b) / b * 100)
+message("RCP 8.5, total absolute change = ", total_rcp85 - init_rcp85)
+message("RCP 8.5, total relative change = ", (total_rcp85 - init_rcp85) / init_rcp85 * 100)
+```
+
+The slow carbon pool was found to be much larger than the fast pool in both climate scenarios, but their sizes differed, with their associated temperature and moisture modifiers not only giving different starting sizes for each pool, but also showing differences in the pattern of SOC during the time course of the model.
+
+We plot the projected changes in the mean monthly surface temperatures and precipitation under RCP scenarios of 2.6 and 8.5 $W \; m^{-2} \; s^{-1}$ from 2007 to 2100 in the Central Suwalesi forest.
+
+```{r plots_1}
+input_rcp26$temp_surf <- input_rcp26$temp_surf - 273.15 # converting to Celcius
+input_rcp85$temp_surf <- input_rcp85$temp_surf - 273.15
+
+library(ggplot2)
+
+# Plotting precipitation
+geom <- ggplot(aes(year, precip, colour = "RCP 2.6"), data = input_rcp26)
+geom + geom_smooth() + 
+  geom_smooth(aes(year, precip, colour = "RCP 8.5"), data = input_rcp85) + 
+  labs(x = "Year", y = "Precipitation (mm)") + 
+  theme(legend.title = element_blank() ) + 
+  theme(plot.title=element_text(family='', face='bold',  size=10))
+
+# Plotting temperature
+geom <- ggplot(aes(year, temp_surf, colour = "RCP 2.6"), data = input_rcp26)
+geom + geom_smooth() +
+  geom_smooth(aes(year, temp_surf, colour = "RCP 8.5"), data = input_rcp85) + 
+  labs(x = "Year", y = "Surface temperature (C)") + 
+  theme(legend.title = element_blank() ) + 
+  theme(plot.title=element_text(family='', face='bold',  size=10))
+```
+
+RCP 8.5 was characterized by higher temperatures and precipitation than in RCP 2.6.
+
+```{r plots_2}
+# Plotting carbon evolution
+months <- c(1:2001)
+plot.85.df <- data.frame(months, SC85, FC85)
+months <- c(1:2001)
+SOC26 <- c(0, SOC26)
+plot.26.df <- data.frame(months, SC26, FC26)
+
+soc26_plot <- ggplot(aes(months,SC26, colour="Slow carbon pool, RCP 2.6"), data = plot.26.df)
+soc26_plot +  geom_line () +
+  #geom_line(aes(months, SOC26, colour="Total SOC")) + 
+  geom_line(aes(months, FC26, colour = "Fast carbon pool, RCP 2.6")) + 
+  geom_line(aes(months, FC85, colour = "Fast carbon pool, RCP 8.5")) + 
+  geom_line(aes(months, SC85, colour = "Slow carbon pool, RCP 8.5")) + 
+  labs(x = "Months", y = "g C m^-2") + 
+  theme(legend.title = element_blank() ) + 
+  ggtitle("SOC dynamics ") + 
+  theme(plot.title=element_text(family='', face='bold',  size=10))
+
+# Comparing SOC for RCPs
+soc85_plot <- ggplot(aes(months,SC85, colour="Total SOC, RCP 8.5"), data = plot.85.df)
+soc85_plot +  geom_line () + geom_line(aes(months,SC26, colour = "Total SOC, RCP 2.6"))+
+  #scale_fill_discrete(palette="Dark2", SC26=1, FC26=2)+
+  #geom_line (aes(months, SOC26, colour = "Total SOC, RCP 2.6"))+
+  #geom_line(aes(months, SOC85, colour = "Total SOC, RCP 8.5"))+
+  labs(x = "Months", y = "g C m^-2")+
+  theme(legend.title = element_blank()) + 
+  ggtitle("Total SOC")+
+  theme(plot.title=element_text(family='', face='bold',  size=10))
+```
+
+The slow carbon pool stabilized at much higher levels than the fast carbon pool, and the fast carbon pool showed greater relative losses than the slow carbon pool in both scenarios.
+
+```{r plots_3}
+# Plotting model run
+runtime <- c(0:max.time)
+model.plot.df <- data.frame(runtime, SC_rcp85, FC_rcp85, SC_rcp26, FC_rcp26)
+
+# Slow carbon evolution
+slow.plot <- ggplot(aes(runtime, SC_rcp85, colour = "RCP 8.5"), data = model.plot.df )
+slow.plot+ geom_line() + 
+  geom_line(aes(runtime, SC_rcp26, colour = "RCP 2.6"), data =) + 
+  labs(x = "Year", y = "g C m^-2") + 
+  theme(legend.title = element_blank()) + 
+  ggtitle("Slow carbon pool ") + 
+  scale_x_continuous(breaks = c(seq(216,1117, by = 300)), labels = c("2025", "2050", "2075", "2100")) + 
+  theme(plot.title=element_text(family='', face='bold',  size=10))
+
+# Fast carbon evolution
+fast.plot <- ggplot(aes(runtime, FC_rcp85, colour = "RCP 8.5"), data = model.plot.df )
+fast.plot+ geom_line() + 
+  geom_line(aes(runtime, FC_rcp26, colour = "RCP 2.6"), data =) + 
+  labs(x = "Year ", y = "g C m^-2") + 
+  theme(legend.title = element_blank()) + 
+  ggtitle("Fast carbon pool ") + 
+  scale_x_continuous(breaks = c(seq(216,1117, by = 300)), labels = c("2025", "2050", "2075", "2100")) + 
+  theme(plot.title=element_text(family='', face='bold',  size=10))
+```
+
+The size of both pools fluctuated with seasonal and annual variations for each climate scenario.
+
+### Recap
+
+RCP 8.5 led to stronger reductions in the size of both carbon pools than RCP 2.6, as a result of modifications of their k-constants by moisture and temperature.
+
+Our model scenario of RCP 8.5 differs strongly from RCP 2.6 in its mean annual temperature, and this may be the main cause of difference between the two scenarios, reflecting the strong dependency of soil respiration on temperature.
+
+However, soil respiration is also sensitive to soil moisture extremes, which may also increase in amplitude and frequency following precipitation patterns according to RCP 8.5, but its influence on decomposition rates is more variable than that of temperature.
+
+Our model suggests that the relative reduction in the fast carbon pool due to changes in climate is larger than the slow carbon pool.
+
+Although both constants were modified by the same changes in moisture and temperature, the faster turnover rate (higher k-constant) of the fast carbon pool most likely leads to its stronger response to each climate scenario than the slow pool as long as their temperature sensitivities are assumed equal.
+
+This contradicts the idea that fast, mobile carbon substrates should be less sensitive to decomposition than complex molecules with higher activation energies required for catabolism, but the “intrinsic” temperature sensitivity of composition is easily obscured by environmental factors like soil moisture altering rates of diffusion.
+
+Indeed, the relative temperature sensitivity of the slow carbon pool compared to the fast carbon pool is not clear, and findings depend on incubation and measurement methods used, but introducing a higher temperature sensitivity for the slow carbon pool may have led to a stronger effect on this pool compared to the fast carbon pool, and is a crucial detail in a climate change context due to the amount of carbon stored in the slow pool.
+
+In addition to influencing “apparent” temperature sensitivity, soil moisture may also increase the differences between respiration of each carbon pool.
+
+For example, rewetting of soil after drying often leads to a spike in soil respiration, primarily through respiration of already labile and available substrate, but this effect is very short-term.
+
+It should be noted that our model is based on input and response data from
+one forest, and the patterns shown in response to various climate scenarios may not be representative for other sites with similar vegetation and climate.
+
+The approach of this study focuses on estimating model parameter values that fit the observed data, which can lead to diverging outcomes based on the differences in driving factors that modify the SOC dynamics, the used conceptual SOM decomposition model, and the type of study site in terms of its climatic zone and land use, making it difficult to assess the degree of accuracy of a particular model.
+
+In addition, local site characteristics limit the models' power in its applicability to other tropical forest systems. For example, variation in local vegetation type can influence the model, because SOC accumulation is
+sensitive to the type of plant matter input, but this is not considered in our model.
+
+Furthermore, our model is based only on 3 years of observations, a timescale which may not represent natural climate variability and response.
+
+Though clearly showing a loss of soil carbon in response to climate change, the model created here is limited by its assumptions.
+
+Inclusion of interactions between pools, different pool characteristics and paths of input would alter its dynamics and improve accuracy, though it is possible that no single model has more support on observations than other model structures.
+
+Taken together with the significance of site-specific characteristics, comparisons of results from different experimental and modeling approaches are therefore crucial to reach prediction conclusions.
+
+### References
+
+- Bonan, G. (2015). Ecological Climatology (3rd ed.). Cambridge: Cambridge University Press.
+- IPCC, 2013. Climate Change 2013: The Physical Science Basis. Contribution of Working Group I to the Fifth Assessment Report of the Intergovernmental Panel on Climate Change T. F. Stocker et al., eds., Cambridge, United Kingdom and New York, NY, USA: Cambridge University Press.
+- Van Straaten, O., Corre, M. D., Wolf, K., Tchienkoua, M., Cuellar, E., Matthews, R. B., & Veldkamp, E. (2015). Conversion of lowland tropical forests to tree cash crop plantations loses up to one-half of stored soil organic carbon. Proceedings of the National Academy of Sciences, 112(32), 9956-9960.
+- Davidson, E. A., & Janssens, I. A. (2006). Temperature sensitivity of soil carbon decomposition and feedbacks to climate change. Nature, 440(7081), 165–173.
+- Hayhoe, K., Edmonds, J., Kopp, R., LeGrande, A., Sanderson, B., Wehner, M., & Wuebbles, D. (2017). Climate models, scenarios, and projections.
+- Kravitz, B., MacMartin, D. G., Rasch, P. J., & Jarvis, A. J. (2015). A new method of comparing forcing agents in climate models. Journal of Climate, 28(20), 8203-8218.
+- van Straaten, O., Veldkamp, E. & Corre, M.D., 2011. Simulated drought reduces soil CO2 efflux and production in a tropical forest in Sulawesi, Indonesia. Ecosphere, 2(10), p.art119. 
+- Hertel, D et al., 2009. Below- and above-ground biomass and net primary production in a paleotropical natural forest (Sulawesi, Indonesia) as compared to neotropical forests. Forest Ecology and Management, 258(9), pp.1904–1912.
+- Taylor, K. E., Stouffer, R. J., & Meehl, G. A. (2012). An overview of CMIP5 and the experiment design. Bulletin of the American Meteorological Society, 93(4), 485-498.
+- Kay, J. E., Deser, C., Phillips, A., Mai, A., Hannay, C., Strand, G., ... & Holland, M. (2015). The Community Earth System Model (CESM) large ensemble project: A community resource for studying climate change in the presence of internal climate variability. Bulletin of the American Meteorological Society, 96(8), 1333-1349.
