@@ -26,7 +26,7 @@ The following topics are included:
 
 ## Statistical analysis
 
-**soil-2018.Rmd** contains a analysis of soil conditions depending on land use.
+**soil-2018.R** contains a analysis of soil conditions depending on land use.
 
 The data set **biogeochemistry.csv** includes various field measurements like pH, microbial biomass or the nitrogen fixing rate.   
 This information is used to compare whether the soil differs between the forest and agroforestry sites.
