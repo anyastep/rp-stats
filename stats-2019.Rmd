@@ -1,14 +1,11 @@
 ---
 title: "Statistical concepts"
-author: "Anna Stepanova"
 date: "09.10.2019"
 output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
-
 knitr::opts_chunk$set(echo = TRUE, eval = TRUE, warning = FALSE)
-
 ```
 
 # T-tests and confidence intervals
@@ -18,26 +15,20 @@ knitr::opts_chunk$set(echo = TRUE, eval = TRUE, warning = FALSE)
 The seed number is the starting point used in the generation of a sequence of random numbers. i.e. you will obtain the same results given the same seen number.
 
 ```{r}
-
 set.seed(0)
-
 ```
 
 $\mu$ is set equal to the mean specified by the null hypothesis.
 
 ```{r}
-
 # t.test(x, mu = 0)
-
 ```
 
 Test if the volume of a shipment was less than usual ($\mu$ = 39000 $ft^3$).
 
 ```{r}
-
 treeVolume <- c(rnorm(75, mean = 36500, sd = 2000))
 t.test(treeVolume, mu = 39000) # Ho: mu = 39000
-
 ```
 
 We see that the current shipment has significantly lower volume than we usually see.
@@ -45,9 +36,7 @@ We see that the current shipment has significantly lower volume than we usually 
 ## Paired-Samples T-Tests
 
 ```{r}
-
 set.seed(2820)
-
 ```
 
 We're testing a new drug, that's meant to reduce hypertension.
@@ -57,11 +46,9 @@ We find 1000 individuals with a high systolic blood pressure (x=145mmHg, SD=9mmH
 We find that the mean systolic blood pressure has decreased to 138mmHg with a standard deviation of 8mmHg.
 
 ```{r}
-
 preTreat <- c(rnorm(1000, mean = 145, sd = 9))
 postTreat <- c(rnorm(1000, mean = 138, sd = 8))
 t.test(preTreat, postTreat, paired = TRUE)
-
 ```
 We see that there is a statistically significant difference in means.
 
@@ -76,22 +63,18 @@ We assume that we have two numeric vectors: one with Clevelanders' spending and 
 Independent-samples t-test where y1 and y2 are numeric:
 
 ```{r}
-
 set.seed(0)
 
 ClevelandSpending <- rnorm(50, mean = 250, sd = 75)
 NYSpending <- rnorm(50, mean = 300, sd = 80)
 
 t.test(ClevelandSpending, NYSpending, var.equal = TRUE)
-
 ```
 
 Note: Test for equality of variances in the data prior to running an independent-samples t-test.
 
 ```{r}
-
 var.test(ClevelandSpending, NYSpending)
-
 ```
 
 The p-value of the F-test is p = 0.9869 which is greater than the significance level 0.05.
@@ -105,12 +88,10 @@ We uses a binary grouping variable with a single column of spending data, i.e. t
 Where y1 is numeric and y2 is binary:
 
 ```{r}
-
 spending <- c(ClevelandSpending, NYSpending)
 city <- c(rep("Cleveland", 50), rep("New York", 50))
 
 t.test(spending ~ city, var.equal = TRUE)
-
 ```
 
 ### Example 3
@@ -120,9 +101,7 @@ We assume that the variances of the two samples are unequal and use the Welch's 
 With equal variances not assumed:
 
 ```{r}
-
 t.test(ClevelandSpending, NYSpending, var.equal = FALSE)
-
 ```
 
 We see that the results really don'?'t differ substantially: our simulated data show that in any case New Yorkers spend more each month at restaurants than Clevelanders do.
@@ -132,10 +111,8 @@ We see that the results really don'?'t differ substantially: our simulated data 
 Here we consider the circumference measurements for body dimensions of 252 men in the **fat** dataset from the R package **faraway**.
 
 ```{r}
-
 library(faraway)
 head(fat)
-
 ```
 
 ### PCA
@@ -143,25 +120,19 @@ head(fat)
 Create a subset of data that only contains the 10 circumference measurements (columns 9 to 18). Perform a PCA on the standardized subset of data and interpret the results.
 
 ```{r}
-
 cfat <- fat[, 9:18]
 
 prfat <- prcomp(cfat, scale=T)
 dim(prfat$rot)
 dim(prfat$x)
-
 ```
 
 ```{r}
-
 summary(prfat)
-
 ```
 
 ```{r}
-
 round(prfat$rot[,1],2)
-
 ```
 
 The first principal component explains 70.21% of the variation in the data while the last few components account for very little of the variation.
@@ -175,9 +146,7 @@ An interpretation of the first principal component is that body shapes in men ar
 The other principal components describe how the data vary in ways orthogonal to the first principal component.
 
 ```{r}
-
 round(prfat$rot[,2],2)
-
 ```
 
 We could, for example look at the second component which is roughly a contrast between the body center measures of chest, abdomen, hip and tigh circumferences against the extremities of forearm, wrist and ankle measures.
@@ -189,10 +158,8 @@ Suppose that in a regression analysis the variable **brozek** (the percentage of
 Run an ordinary least squares regression and interpret the results.
 
 ```{r}
-
 lmod <- lm(fat$brozek~., data=cfat)
 summary(lmod)
-
 ```
 
 Due to clear indications of collinearity, it is difficult to say something about the variables influencing the body fat percentage.
@@ -204,10 +171,8 @@ Perform a principal component regression (PCR) with **brozek** as the response a
 Compare the results to the results obtained from the ordinary least square regression.
 
 ```{r}
-
 lmodpcr <- lm(fat$brozek~prfat$x[,1:2])
 summary(lmodpcr)
-
 ```
 
 Since the two predictors are now orthogonal, we can interpret them without worrying about collinearity.
