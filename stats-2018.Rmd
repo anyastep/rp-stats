@@ -1,15 +1,12 @@
 ---
 title: "A very brief introduction to statistics"
-author: "Anna Stepanova"
 date: '2018-09-25'
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-
 knitr::opts_chunk$set(echo = TRUE, eval = TRUE, warning = FALSE)
 setwd("")
-
 ```
 
 > "Torture numbers, and they'll confess to anything."
@@ -60,12 +57,10 @@ There are multiple ways to summaris ecomplex data into one or a few numbers.
 Load the data set 'genes.csv' and take a look at the type of each variable.
 
 ```{r part1}
-
 d <- read.csv("data/genes.csv", header = TRUE, sep = ",", dec = ".")
 str(d)
 
 sapply(d, class)
-
 ```
 
 #### Summary statistics and precision
@@ -75,7 +70,6 @@ Calculate the arithmetic mean and the standard deviation of length, expression, 
 Report to two decimal places.
 
 ```{r part2}
-
 round(mean(d$length), 2)
 round(mean(d$expression), 2)
 round(mean(d$halflife), 2)
@@ -83,7 +77,6 @@ round(mean(d$halflife), 2)
 round(sd(d$length), 2)
 round(sd(d$expression), 2)
 round(sd(d$halflife), 2)
-
 ```
 
 ### Getting a feel for the data
@@ -142,25 +135,19 @@ An important step in statistical analysis is data visualization.
 Plot a histogram to visualize the distribution of the variable optimality.
 
 ```{r part3.1}
-
 hist(d$optimality)
-
 ```
 
 Plot a scatter plot to visualize the relationship between the variables expression and half-life.
 
 ```{r part3.2}
-
 plot(d$optimality, d$halflife)
-
 ```
 
 Plot a boxplot to visualize the relationship between the variables optimality and half-life.
 
 ```{r part3.3}
-
 boxplot(d$optimality, d$halflife)
-
 ```
 
 ### Statistical inference
@@ -211,18 +198,15 @@ Since statistical inference is by its nature uncertain, two types of errors can 
 Compute the arithmetic means for the variable gene expression and a differentiation between different gene types.
 
 ```{r part4.1}
-
 library("RcmdrMisc")
 
 with(d, numSummary(expression, groups=type, statistics=c("mean")))
 # mean(subset(d, type=="mRNA")$expression)
-
 ```
 
 Using an analysis of variance, assess whether the gene type influences the variation in gene expression values.
 
 ```{r part4.2}
-
 mod.lm <- lm(expression~type, data=d)
 anova(mod.lm)
 summary(mod.lm) # for individual comparisons
@@ -230,7 +214,6 @@ summary(mod.lm) # for individual comparisons
 mod.aov <- aov(expression~type, data=d)
 summary(mod.aov)
 TukeyHSD(mod.aov,c("type")) # p-value is adjusted for multiple comparisons and the p-values ends up higher than in the lm
-
 ```
 
 ### From ANOVA to regression
@@ -259,7 +242,7 @@ Linear regression models allow for the inclusion of a multitude of variable type
 
 ### Generalization of linear models
 
-Often we face bionary outcomes, e.g. healthy vs. diseased.
+Often we face binary outcomes, e.g. healthy vs. diseased.
 
 The model's outcome should therefore be interpreted in terms of probability, i.e. provide estimates for
 $$\hat\pi = P(Y=1|X) = E(Y).$$
@@ -293,7 +276,6 @@ The general idea of binary regression is to obtain estimators for a parameter ($
 Based on available observations, estimate and interpret a linear regression model of the form
 $$y = \beta_0 + \beta_1x + \epsilon.$$
 ```{r part5.1}
-
 statistician <- c("Gauss", "Galton", "Nightingale", "Box", "Kneib")
 y <- c(979000, 324000, 814000, 73500, 13400) # hits on google.com
 x <- c(22300, 22100, 74300, 6270, 927) # hits on Google Scholar
@@ -302,13 +284,11 @@ d <- data.frame(google.hits=y, scholar.hits=x)
 
 mod <- lm(google.hits~scholar.hits, data=d)
 summary(mod)
-
 ```
 
 Plot the observations and the obtained regression line.
 
 ```{r part5.2}
-
 plot(x, y, pch=16, ylim=c(0,1.01e6), xlim=c(0,0.8e5), las=1, xaxt="n", yaxt="n", 
      xlab="scholar hits (in millions)", ylab="google hits (in millions)",
      main="A Depiction of Fame and Academic Success on Google", cex.main=0.8)
@@ -316,7 +296,6 @@ abline(mod, col=2, lwd=2)
 text(x, y+0.5e5, labels=statistician, cex=0.5)
 axis(2, seq(0,3e6,by=0.1e6), format(seq(0,3,by=0.1), nsmall=1), las=1) # xaxis
 axis(1, seq(0,5e5,by=0.1e5) ,format(seq(0,0.5,by=0.01), nsmall=2), las=1) # yaxis
-
 ```
 
 Based on the model above, we estimate a statistician to have an average 180000 hits on google.com, if he/she has no hits on Google Scholar.
@@ -330,12 +309,10 @@ The data set 'statisticians.csv' contains both real and simulated information on
 Load the data set, estimate and interpret a linear regression model of the form.
 $$happiness.sim = \beta_0 + \beta_1papers.sim + \beta_2height.sim + \epsilon.$$
 ```{r part6.1}
-
 d <- read.table("data/statisticians.csv", sep=";", dec=",", header=TRUE)
 
 m <- lm(happiness.sim~papers.sim + height2.sim, data=d)
 summary(m)
-
 ```
 
 $\beta_0$: no sensible interpretation (as height=0 not sensible).
@@ -347,12 +324,10 @@ $\beta_2$: for every additional cm in height the statistician is on average 0.07
 Then extend the model to
 $$happiness.sim = \beta_0 + \beta_1papers.sim + \beta_2height.sim + \beta_3FieldsMedal.sim + f_{binary}(era) + f_{nominal}(faviceCream.sim) \epsilon.$$
 ```{r part6.2}
-
 d$era <- as.factor(d$era)
 
 m2d <- lm(happiness.sim~papers.sim + height2.sim + FieldsMedal.sim + era + factor(favIceCream.sim), data=d)
 summary(m2d)
-
 ```
 
 #### Generalized linear models
@@ -360,17 +335,14 @@ summary(m2d)
 Using a logistic regression model relating the probability of winning a Field's Medal to the number of publications, estimate the probability of winning the Field's Medal for a statistician with 200 publications.
 
 ```{r part7.1}
-
 mod.logit <- glm(as.factor(FieldsMedal.sim)~papers.sim, family=binomial(link="logit"), data=d)
 summary(mod.logit)
 round(predict(mod.logit, newdata=data.frame(papers.sim=200), type="response"), digits=3)
-
 ```
 
 Using a logistic regression model relating gene type to gene length, estimate the probability that an annotated gene with 1000bp length is an mRNA.
 
 ```{r part7.2}
-
 library(MASS)
 
 d <- read.csv("data/genes.csv", header = TRUE, sep = ",", dec = ".")
@@ -385,7 +357,6 @@ summary(output.glm)
 output.glm$coefficients # Extract regression coefficients
 confint(output.glm, level = 0.95) # Compute confidence intervals
 exp(0.4435 + 0.001111*1000)/(1+exp(0.4435 + 0.001111*1000))
-
 ```
 
 > "Essentially all models are wrong but some of them are useful"
